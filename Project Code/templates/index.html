@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommendation system using Machine learning</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function getRecommendations(genre){
+            // let genre = document.getElementById("genreInput").value; // type of genre
+            fetch(`http://127.0.0.1:5000/recommend?genre=${genre}`)
+            .then(response => response.json()).then(
+                data => {
+                    console.log("API Response:", data);
+                    let resultDiv = document.getElementById('results');
+                    resultDiv.innerHTML = `<h2 style="color:#fff;">Recommended Songs: </h2>`;
+                    resultDiv.innerHTML += `<p style="margin-bottom:20px;color:#fff;font-size:20px;">${data.length} results found for ${genre}</p>`;
+                    resultDiv.innerHTML += '<div style="clear:both;"></div>';
+                    if (!data || data.length === 0) {
+                        resultDiv.innerHTML += `<p>No recommendations found.</p>`;
+                    } else if (data.message) {  // If Flask returns a message
+                        resultDiv.innerHTML += `<p>${data.message}</p>`;
+                    } else {
+                        data.forEach(song => {
+                            // resultDiv.innerHTML += `<p><b>${song.Song}</b> by ${song.Artist}</p>`;
+                            const card = document.createElement('div');
+                            card.classList.add('music-card');
+                            card.innerHTML = `
+                                <a href="playmusic?song=${song.Song}" />
+                                    <!--<div class="card-header">
+                                        <img src="" alt=${song.Song}/>
+                                    </div>-->
+                                    <div class="card-body">
+                                        <h2 class="song-name">${song.Song}</h2>
+                                        <p class="song-artist">${song.Artist}</p>
+                                        <p class="song-genre">${song.Genre}</p>
+                                        <p class="song-album">${song.Album}</p>
+                                        <p class="song-rating">${song.Rating}</p>
+                                    </div>
+                                </a>
+                            `;
+                            resultDiv.appendChild(card);
+                        });
+                    }
+                }
+            ).catch(error => {
+                console.error("Error fetching recommendations: ", error);
+                document.getElementById('results').innerHTML = `<p style="color:red;">Error fetching recommendations. Please try again.</p>`;
+            });
+        }
+
+        function searchSong() {
+            const song = document.getElementById('searchInput').value;
+            if (!song) {
+                alert('Please enter a song name.');
+                return;
+            }
+            // Redirect to playmusic.html with the song name as a URL parameter
+            window.location.href = `search?song=${encodeURIComponent(song)}`;
+        }
+    </script>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <h1 id="logo">Music Recommender</h1>
+            <div class="nav-btn-group" style="display: none;">
+                <button class="btn btn-login">LogIn</button>
+                <button class="btn btn-signup">SignUp</button>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search Song...">
+                <button onclick="searchSong()">Search</button>
+            </div>
+        </nav>
+        <h1 class="header-heading">Music Recommendation System</h1>
+        <p class="header-sub-heading">Select your Genre</p>
+    </header>
+    <!-- <input type="text" id="genreInput" placeholder="Enter Genre">
+    <button onclick="getRecommendations()">Get Recommendations</button> -->
+    <div class="genre-btn-grp">
+        <button onclick="getRecommendations('bollywood')">All</button>
+        <button onclick="getRecommendations('dance')">Dance</button>
+        <button onclick="getRecommendations('devotional')">Devotional</button>
+        <button onclick="getRecommendations('motivational')">Motivational</button>
+        <button onclick="getRecommendations('patriotic')">Patriotic</button>
+        <button onclick="getRecommendations('romance')">Romance</button>
+        <button onclick="getRecommendations('romantic')">Romantic</button>
+        <button onclick="getRecommendations('sad')">Sad</button>
+        <button onclick="getRecommendations('sensual')">Sensual</button>
+    </div>
+    <div id="results"></div>
+</body>
+</html>

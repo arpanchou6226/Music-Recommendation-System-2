@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Music</title>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: sans-serif;
+            background-color: #262626;
+        }
+        .container{
+            width: 50%;
+            background-color: rgba(255,255,255,0.3);
+            height: 100vh;
+            margin: auto;
+        }
+        h2#song_title{
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+        }
+        .image_container{
+            margin: auto;
+            width: 360px;
+            height: 202px;
+            background-color: #000;
+            position: relative;
+        }
+        .image_container span.image-loading{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            z-index: 1;
+        }
+        .image_container img {
+            z-index: 100;
+        }
+        .control-btn-group{
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .btn-play-pause{
+            outline: none;
+            padding: 8px 10px;
+            margin: 10px;
+            border: none;
+            background-color: #000;
+            color: #fff;
+        }
+        #song-info{
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="song_title">Loading</h2>
+        <iframe id="song-frame" width="560" height="315" frameborder="0" allowfullscreen style="display: none;"></iframe>
+        <div class="image_container">
+            <span class="image-loading">Loading</span>
+            <img src="" alt="" id="song-thumbnail" />
+        </div>
+        <div class="control-btn-group">
+            <button class="btn-play-pause" onclick="playSong()">Play</button>
+            <button class="btn-play-pause" onclick="pauseSong()">Pause</button>
+        </div>
+        <div id="loading" style="display: none;">
+            <p>Loading...</p> <!-- You can use a spinner or progress bar here -->
+        </div>
+        <p id="song-info"></p>
+    </div>
+</body>
+</html>
